@@ -83,6 +83,7 @@ type Config struct {
 	Gemini                  GeminiConfig                  `mapstructure:"gemini"`
 	Update                  UpdateConfig                  `mapstructure:"update"`
 	Idempotency             IdempotencyConfig             `mapstructure:"idempotency"`
+	Epay                    EpayConfig                    `yaml:"epay" mapstructure:"epay"`
 }
 
 type LogConfig struct {
@@ -163,6 +164,16 @@ type IdempotencyConfig struct {
 	CleanupIntervalSeconds int `mapstructure:"cleanup_interval_seconds"`
 	// CleanupBatchSize 每次清理的最大记录数。
 	CleanupBatchSize int `mapstructure:"cleanup_batch_size"`
+}
+
+type EpayConfig struct {
+	Enabled   bool    `yaml:"enabled" mapstructure:"enabled"`
+	APIUrl    string  `yaml:"api_url" mapstructure:"api_url"`
+	PID       int     `yaml:"pid" mapstructure:"pid"`
+	Key       string  `yaml:"key" mapstructure:"key"`
+	NotifyURL string  `yaml:"notify_url" mapstructure:"notify_url"`
+	ReturnURL string  `yaml:"return_url" mapstructure:"return_url"`
+	USDToRMB  float64 `yaml:"usd_to_rmb" mapstructure:"usd_to_rmb"`
 }
 
 type LinuxDoConnectConfig struct {

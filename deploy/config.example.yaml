@@ -993,3 +993,30 @@ update:
   # Leave empty for direct connection (recommended for overseas servers)
   # 留空表示直连（适用于海外服务器）
   proxy_url: ""
+
+# =============================================================================
+# 易支付 (EasyPay) Configuration
+# 易支付配置
+# =============================================================================
+epay:
+  # Enable EasyPay integration
+  # 是否启用易支付
+  enabled: false
+  # EasyPay API base URL
+  # 易支付 API 地址
+  api_url: "https://pay.example.com"
+  # Merchant PID
+  # 商户 PID
+  pid: 1001
+  # Merchant secret key
+  # 商户密钥
+  key: "your-merchant-key"
+  # Payment result notification URL (called by EasyPay after payment)
+  # 支付结果通知地址（支付完成后由易支付回调）
+  notify_url: "https://yoursite.com/api/v1/payment/notify"
+  # Return URL after payment completion
+  # 支付完成后的跳转地址
+  return_url: "https://yoursite.com/topup?status=success"
+  # USD to RMB exchange rate
+  # 美元兑人民币汇率
+  usd_to_rmb: 7.2
