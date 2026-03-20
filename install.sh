@@ -281,10 +281,17 @@ main() {
             exit 0 ;;
     esac
 
-    # 默认: 全新安装
+    # 默认: 全新安装 / 重新安装
     check_root
     detect_platform
     check_deps
+
+    # 如果已有旧安装在运行，先停掉
+    if systemctl is-active sub2api >/dev/null 2>&1; then
+        info "检测到服务正在运行，先停止..."
+        systemctl stop sub2api
+    fi
+
     configure_server
     get_latest_version
     download_and_extract
@@ -320,4 +327,10 @@ main() {
     echo ""
 }
 
-main "$@"
+# 当通过 curl | bash -s upgrade 调用时，参数在 $0 而非 $1
+# 检测并修正
+if [ "${0:-}" = "upgrade" ] || [ "${0:-}" = "uninstall" ] || [ "${0:-}" = "list-versions" ]; then
+    main "$0" "$@"
+else
+    main "$@"
+fi
