@@ -219,7 +219,7 @@ upgrade() {
 # =============================================================================
 uninstall() {
     warn "将卸载 Token Site"
-    read -p "确认卸载? (y/N): " -r; echo
+    read -p "确认卸载? (y/N): " -r < /dev/tty; echo
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
 
     systemctl stop sub2api 2>/dev/null || true
@@ -227,7 +227,7 @@ uninstall() {
     rm -f /etc/systemd/system/sub2api.service
     systemctl daemon-reload
 
-    read -p "删除数据目录 $INSTALL_DIR? (y/N): " -r; echo
+    read -p "删除数据目录 $INSTALL_DIR? (y/N): " -r < /dev/tty; echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         rm -rf "$INSTALL_DIR"
         ok "数据已删除"
