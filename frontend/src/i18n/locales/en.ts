@@ -355,7 +355,8 @@ export default {
     sora: 'Sora Studio',
     topUp: 'Top Up',
     models: 'Models',
-    chat: 'Chat'
+    chat: 'Chat',
+    tutorial: 'Tutorial'
   },
 
   // Auth
@@ -4949,5 +4950,9 @@ export default {
     placeholder: 'Type a message...',
     selectModel: 'Select a model',
     errorStream: 'Failed to get response'
+  },
+
+  tutorial: {
+    title: 'Usage Tutorial'
   }
 }

@@ -355,7 +355,8 @@ export default {
     sora: 'Sora 创作',
     topUp: '充值',
     models: '模型目录',
-    chat: '对话'
+    chat: '对话',
+    tutorial: '使用教程'
   },
 
   // Auth
@@ -5138,5 +5139,9 @@ export default {
     placeholder: '输入消息...',
     selectModel: '选择模型',
     errorStream: '获取回复失败'
+  },
+
+  tutorial: {
+    title: '使用教程'
   }
 }
