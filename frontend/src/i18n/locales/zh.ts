@@ -353,7 +353,8 @@ export default {
     buySubscription: '充值/订阅',
     docs: '文档',
     sora: 'Sora 创作',
-    topUp: '充值'
+    topUp: '充值',
+    models: '模型目录'
   },
 
   // Auth
@@ -5099,5 +5100,30 @@ export default {
     examplePrompt2: '无人机航拍视角，冰岛极光下的冰川湖面反射绿色光芒，慢速推进',
     examplePrompt3: '赛博朋克风格的未来城市，霓虹灯倒映在雨后积水中，夜景，电影级色彩',
     examplePrompt4: '水墨画风格，一叶扁舟在山水间漂泊，薄雾缭绕，中国古典意境'
+  },
+
+  // 模型目录
+  models: {
+    title: '模型目录',
+    detail: '模型详情',
+    search: '搜索模型...',
+    all: '全部',
+    pricing: '定价',
+    inputPrice: '输入',
+    outputPrice: '输出',
+    perMTokens: '/ 百万 token',
+    contextWindow: '上下文窗口',
+    maxOutput: '最大输出',
+    inputFormats: '输入格式',
+    outputFormats: '输出格式',
+    tryInChat: '在对话中试用',
+    getApiKey: '获取 API Key',
+    yourApiKey: '你的 API Key',
+    noKeyYet: '你还没有该模型的 API Key。',
+    generateKey: '生成 API Key',
+    usageGuide: '使用指南',
+    specifications: '规格参数',
+    tokens: 'token',
+    backToModels: '返回模型列表'
   }
 }

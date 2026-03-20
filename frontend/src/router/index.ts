@@ -165,6 +165,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/models',
+    name: 'Models',
+    component: () => import('@/views/user/ModelsView.vue'),
+    meta: { requiresAuth: true, requiresAdmin: false, title: 'Models', titleKey: 'models.title' }
+  },
+  {
+    path: '/models/:id',
+    name: 'ModelDetail',
+    component: () => import('@/views/user/ModelDetailView.vue'),
+    meta: { requiresAuth: true, requiresAdmin: false, title: 'Model Detail', titleKey: 'models.detail' }
+  },
+  {
     path: '/redeem',
     name: 'Redeem',
     component: () => import('@/views/user/RedeemView.vue'),

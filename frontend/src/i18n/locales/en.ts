@@ -353,7 +353,8 @@ export default {
     buySubscription: 'Recharge / Subscription',
     docs: 'Docs',
     sora: 'Sora Studio',
-    topUp: 'Top Up'
+    topUp: 'Top Up',
+    models: 'Models'
   },
 
   // Auth
@@ -4910,5 +4911,30 @@ export default {
     examplePrompt2: 'Drone aerial view, green aurora reflecting on a glacial lake in Iceland, slow push-in',
     examplePrompt3: 'Cyberpunk futuristic city, neon lights reflected in rain puddles, nightscape, cinematic colors',
     examplePrompt4: 'Chinese ink painting style, a small boat drifting among misty mountains and rivers, classical atmosphere'
+  },
+
+  // Model Catalog
+  models: {
+    title: 'Model Catalog',
+    detail: 'Model Detail',
+    search: 'Search models...',
+    all: 'All',
+    pricing: 'Pricing',
+    inputPrice: 'Input',
+    outputPrice: 'Output',
+    perMTokens: '/ M tokens',
+    contextWindow: 'Context Window',
+    maxOutput: 'Max Output',
+    inputFormats: 'Input Formats',
+    outputFormats: 'Output Formats',
+    tryInChat: 'Try in Chat',
+    getApiKey: 'Get API Key',
+    yourApiKey: 'Your API Key',
+    noKeyYet: "You don't have an API key for this model yet.",
+    generateKey: 'Generate API Key',
+    usageGuide: 'Usage Guide',
+    specifications: 'Specifications',
+    tokens: 'tokens',
+    backToModels: 'Back to Models'
   }
 }
