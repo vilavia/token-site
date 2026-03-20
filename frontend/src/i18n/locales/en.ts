@@ -354,7 +354,8 @@ export default {
     docs: 'Docs',
     sora: 'Sora Studio',
     topUp: 'Top Up',
-    models: 'Models'
+    models: 'Models',
+    chat: 'Chat'
   },
 
   // Auth
@@ -4936,5 +4937,17 @@ export default {
     specifications: 'Specifications',
     tokens: 'tokens',
     backToModels: 'Back to Models'
+  },
+
+  // Chat
+  chat: {
+    title: 'Chat',
+    newChat: 'New Chat',
+    startPrompt: 'Choose a model and start chatting',
+    thinking: 'Thinking...',
+    send: 'Send',
+    placeholder: 'Type a message...',
+    selectModel: 'Select a model',
+    errorStream: 'Failed to get response'
   }
 }

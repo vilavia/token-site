@@ -354,7 +354,8 @@ export default {
     docs: '文档',
     sora: 'Sora 创作',
     topUp: '充值',
-    models: '模型目录'
+    models: '模型目录',
+    chat: '对话'
   },
 
   // Auth
@@ -5125,5 +5126,17 @@ export default {
     specifications: '规格参数',
     tokens: 'token',
     backToModels: '返回模型列表'
+  },
+
+  // 对话
+  chat: {
+    title: '对话',
+    newChat: '新对话',
+    startPrompt: '选择模型，开始对话',
+    thinking: '思考中...',
+    send: '发送',
+    placeholder: '输入消息...',
+    selectModel: '选择模型',
+    errorStream: '获取回复失败'
   }
 }
