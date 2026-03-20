@@ -88,6 +88,9 @@ func ProvideHandlers(
 	totpHandler *TotpHandler,
 	_ *service.IdempotencyCoordinator,
 	_ *service.IdempotencyCleanupService,
+	paymentHandler *PaymentHandler,
+	chatHandler *ChatHandler,
+	modelCatalogHandler *ModelCatalogHandler,
 ) *Handlers {
 	return &Handlers{
 		Auth:          authHandler,
@@ -104,6 +107,9 @@ func ProvideHandlers(
 		SoraClient:    soraClientHandler,
 		Setting:       settingHandler,
 		Totp:          totpHandler,
+		Payment:       paymentHandler,
+		Chat:          chatHandler,
+		ModelCatalog:  modelCatalogHandler,
 	}
 }
 
@@ -122,6 +128,9 @@ var ProviderSet = wire.NewSet(
 	NewSoraGatewayHandler,
 	NewTotpHandler,
 	ProvideSettingHandler,
+	NewPaymentHandler,
+	NewChatHandler,
+	NewModelCatalogHandler,
 
 	// Admin handlers
 	admin.NewDashboardHandler,

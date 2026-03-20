@@ -47,6 +47,9 @@ type Handlers struct {
 	SoraClient    *SoraClientHandler
 	Setting       *SettingHandler
 	Totp          *TotpHandler
+	Payment       *PaymentHandler
+	Chat          *ChatHandler
+	ModelCatalog  *ModelCatalogHandler
 }
 
 // BuildInfo contains build-time information
