@@ -520,7 +520,9 @@ export default {
     viewUsage: '查看使用记录',
     checkDetailedLogs: '查看详细的使用日志',
     redeemCode: '兑换码',
-    addBalanceWithCode: '使用兑换码充值'
+    addBalanceWithCode: '使用兑换码充值',
+    topUp: '充值',
+    topUpBalance: '为账户充值'
   },
 
   // Groups (shared)

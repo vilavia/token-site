@@ -520,7 +520,9 @@ export default {
     viewUsage: 'View Usage',
     checkDetailedLogs: 'Check detailed usage logs',
     redeemCode: 'Redeem Code',
-    addBalanceWithCode: 'Add balance with a code'
+    addBalanceWithCode: 'Add balance with a code',
+    topUp: 'Top Up',
+    topUpBalance: 'Add funds to your account'
   },
 
   // Groups (shared)
