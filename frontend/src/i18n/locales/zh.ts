@@ -4426,6 +4426,10 @@ export default {
         enabled: '启用在线对话',
         enabledHint: '关闭后，侧边栏将隐藏对话入口'
       },
+      models: {
+        enabled: '启用模型目录',
+        enabledHint: '关闭后，侧边栏将隐藏模型目录入口'
+      },
       customMenu: {
         title: '自定义菜单页面',
         description: '添加自定义 iframe 页面到侧边栏导航。每个页面可以设置为普通用户或管理员可见。',

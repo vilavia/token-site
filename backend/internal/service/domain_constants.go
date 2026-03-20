@@ -109,6 +109,7 @@ const (
 	// OEM设置
 	SettingKeySoraClientEnabled           = "sora_client_enabled"           // 是否启用 Sora 客户端（管理员手动控制）
 	SettingKeyChatEnabled                = "chat_enabled"                  // 是否启用在线对话功能
+	SettingKeyModelsEnabled              = "models_enabled"                // 是否启用模型目录页面
 	SettingKeySiteName                    = "site_name"                     // 网站名称
 	SettingKeySiteLogo                    = "site_logo"                     // 网站Logo (base64)
 	SettingKeySiteSubtitle                = "site_subtitle"                 // 网站副标题

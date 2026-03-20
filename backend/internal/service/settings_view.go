@@ -43,6 +43,7 @@ type SystemSettings struct {
 	PurchaseSubscriptionURL     string
 	SoraClientEnabled           bool
 	ChatEnabled                 bool
+	ModelsEnabled               bool
 	CustomMenuItems             string // JSON array of custom menu items
 
 	DefaultConcurrency   int
@@ -118,6 +119,7 @@ type PublicSettings struct {
 	PurchaseSubscriptionURL     string
 	SoraClientEnabled           bool
 	ChatEnabled                 bool
+	ModelsEnabled               bool
 	CustomMenuItems             string // JSON array of custom menu items
 
 	LinuxDoOAuthEnabled bool

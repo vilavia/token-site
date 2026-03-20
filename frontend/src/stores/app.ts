@@ -333,6 +333,7 @@ export const useAppStore = defineStore('app', () => {
         linuxdo_oauth_enabled: false,
         sora_client_enabled: false,
         chat_enabled: true,
+        models_enabled: true,
         backend_mode_enabled: false,
         version: siteVersion.value
       }

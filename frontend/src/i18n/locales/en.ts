@@ -4261,6 +4261,10 @@ export default {
         enabled: 'Enable Online Chat',
         enabledHint: 'When disabled, the Chat entry will be hidden from the sidebar'
       },
+      models: {
+        enabled: 'Enable Model Catalog',
+        enabledHint: 'When disabled, the Models entry will be hidden from the sidebar'
+      },
       customMenu: {
         title: 'Custom Menu Pages',
         description: 'Add custom iframe pages to the sidebar navigation. Each page can be visible to regular users or administrators.',

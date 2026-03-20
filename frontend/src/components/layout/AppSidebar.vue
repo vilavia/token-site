@@ -510,7 +510,9 @@ const userNavItems = computed((): NavItem[] => {
     ...(appStore.cachedPublicSettings?.chat_enabled !== false
       ? [{ path: '/chat', label: t('nav.chat'), icon: ChatIcon }]
       : []),
-    { path: '/models', label: t('nav.models'), icon: ModelsIcon },
+    ...(appStore.cachedPublicSettings?.models_enabled !== false
+      ? [{ path: '/models', label: t('nav.models'), icon: ModelsIcon }]
+      : []),
     { path: '/keys', label: t('nav.apiKeys'), icon: KeyIcon },
     { path: '/usage', label: t('nav.usage'), icon: ChartIcon, hideInSimpleMode: true },
     ...(appStore.cachedPublicSettings?.sora_client_enabled
@@ -535,7 +537,9 @@ const personalNavItems = computed((): NavItem[] => {
     ...(appStore.cachedPublicSettings?.chat_enabled !== false
       ? [{ path: '/chat', label: t('nav.chat'), icon: ChatIcon }]
       : []),
-    { path: '/models', label: t('nav.models'), icon: ModelsIcon },
+    ...(appStore.cachedPublicSettings?.models_enabled !== false
+      ? [{ path: '/models', label: t('nav.models'), icon: ModelsIcon }]
+      : []),
     { path: '/keys', label: t('nav.apiKeys'), icon: KeyIcon },
     { path: '/usage', label: t('nav.usage'), icon: ChartIcon, hideInSimpleMode: true },
     ...(appStore.cachedPublicSettings?.sora_client_enabled

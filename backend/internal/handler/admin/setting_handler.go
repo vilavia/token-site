@@ -110,6 +110,7 @@ func (h *SettingHandler) GetSettings(c *gin.Context) {
 		PurchaseSubscriptionURL:              settings.PurchaseSubscriptionURL,
 		SoraClientEnabled:                    settings.SoraClientEnabled,
 		ChatEnabled:                          settings.ChatEnabled,
+		ModelsEnabled:                        settings.ModelsEnabled,
 		CustomMenuItems:                      dto.ParseCustomMenuItems(settings.CustomMenuItems),
 		DefaultConcurrency:                   settings.DefaultConcurrency,
 		DefaultBalance:                       settings.DefaultBalance,
@@ -187,6 +188,7 @@ type UpdateSettingsRequest struct {
 	PurchaseSubscriptionURL     *string               `json:"purchase_subscription_url"`
 	SoraClientEnabled           bool                  `json:"sora_client_enabled"`
 	ChatEnabled                 *bool                 `json:"chat_enabled"`
+	ModelsEnabled               *bool                 `json:"models_enabled"`
 	CustomMenuItems             *[]dto.CustomMenuItem `json:"custom_menu_items"`
 
 	// 默认配置
@@ -524,6 +526,12 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 			}
 			return previousSettings.ChatEnabled
 		}(),
+		ModelsEnabled: func() bool {
+			if req.ModelsEnabled != nil {
+				return *req.ModelsEnabled
+			}
+			return previousSettings.ModelsEnabled
+		}(),
 		CustomMenuItems:                  customMenuJSON,
 		DefaultConcurrency:               req.DefaultConcurrency,
 		DefaultBalance:                   req.DefaultBalance,
@@ -647,6 +655,7 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		PurchaseSubscriptionURL:              updatedSettings.PurchaseSubscriptionURL,
 		SoraClientEnabled:                    updatedSettings.SoraClientEnabled,
 		ChatEnabled:                          updatedSettings.ChatEnabled,
+		ModelsEnabled:                        updatedSettings.ModelsEnabled,
 		CustomMenuItems:                      dto.ParseCustomMenuItems(updatedSettings.CustomMenuItems),
 		DefaultConcurrency:                   updatedSettings.DefaultConcurrency,
 		DefaultBalance:                       updatedSettings.DefaultBalance,
