@@ -28,6 +28,9 @@ func RegisterPaymentRoutes(
 	{
 		authenticated.POST("/orders", h.CreateOrder)
 		authenticated.GET("/orders", h.GetOrders)
+		authenticated.POST("/orders/:id/cancel", h.CancelOrder)
+		authenticated.POST("/orders/:id/pay", h.RetryPayment)
 		authenticated.GET("/exchange-rate", h.GetExchangeRate)
+		authenticated.GET("/limits", h.GetLimits)
 	}
 }

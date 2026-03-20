@@ -356,7 +356,8 @@ export default {
     topUp: '充值',
     models: '模型目录',
     chat: '对话',
-    tutorial: '使用教程'
+    tutorial: '使用教程',
+    orders: '订单管理'
   },
 
   // Auth
@@ -830,10 +831,16 @@ export default {
     payNow: '立即支付',
     orderHistory: '充值记录',
     noOrders: '暂无充值记录',
+    createOrderFailed: '创建订单失败',
+    pay: '支付',
+    cancel: '取消',
+    confirmCancel: '确定要取消该订单吗？',
     orderNo: '订单号',
     amount: '金额',
     status: '状态',
     time: '时间',
+    minAmount: '最低: ${min}',
+    maxAmount: '最高: ${max}',
   },
 
   // Profile
@@ -1034,6 +1041,29 @@ export default {
       systemSettings: '系统设置',
       configureSystem: '配置系统设置',
       failedToLoad: '加载仪表盘数据失败'
+    },
+
+    orders: {
+      title: '支付订单',
+      allOrders: '全部',
+      pending: '待支付',
+      paid: '已支付',
+      cancelled: '已取消',
+      userId: '用户ID',
+      orderNo: '订单号',
+      amountUsd: '金额 (USD)',
+      amountRmb: '金额 (RMB)',
+      status: '状态',
+      payType: '支付方式',
+      time: '时间',
+      actions: '操作',
+      markAsPaid: '标记已支付',
+      confirmMarkPaid: '确定要将此订单标记为已支付吗？这将为用户充值余额。',
+      markPaidSuccess: '订单已标记为已支付',
+      markPaidFailed: '标记订单失败',
+      noOrders: '暂无订单',
+      filterByUser: '按用户ID筛选',
+      viewOrders: '订单',
     },
 
     backup: {
@@ -4241,6 +4271,7 @@ export default {
         users: '用户默认值',
         gateway: '网关服务',
         email: '邮件设置',
+        payment: '支付设置',
         backup: '数据备份',
         data: 'Sora 存储',
       },
@@ -4390,6 +4421,10 @@ export default {
         description: '控制是否在侧边栏展示 Sora 客户端入口',
         enabled: '启用 Sora 客户端',
         enabledHint: '开启后，侧边栏将显示 Sora 入口，用户可访问 Sora 功能'
+      },
+      chat: {
+        enabled: '启用在线对话',
+        enabledHint: '关闭后，侧边栏将隐藏对话入口'
       },
       customMenu: {
         title: '自定义菜单页面',
@@ -4572,6 +4607,33 @@ export default {
           testSuccess: 'Google Drive 存储测试成功（上传、访问、删除均正常）',
           testFailed: 'Google Drive 存储测试失败'
         }
+      },
+      payment: {
+        title: '支付设置（易支付）',
+        description: '配置用户充值的支付网关。',
+        enabled: '启用支付',
+        enabledHint: '允许用户通过易支付网关充值账户余额。',
+        apiUrl: 'API 地址',
+        apiUrlHint: '易支付网关的基础 URL（例如 https://pay.example.com）。',
+        pid: '商户 ID (PID)',
+        pidHint: '易支付平台分配的商户 ID。',
+        key: '商户密钥',
+        keyConfigured: '已配置',
+        keyPlaceholderConfigured: '留空保持当前密钥不变',
+        keyPlaceholder: '输入商户密钥',
+        keyHint: '用于签名支付请求的密钥。留空将保持当前密钥不变。',
+        notifyUrl: '异步通知地址',
+        notifyUrlHint: '支付回调通知 URL（必须可从互联网访问）。',
+        returnUrl: '同步跳转地址',
+        returnUrlHint: '支付完成后用户跳转的 URL。',
+        usdToRmb: 'USD 转 RMB 汇率',
+        usdToRmbHint: '用于将美元金额转换为人民币进行支付处理的汇率。',
+        minTopupUsd: '最低充值金额 (USD)',
+        minTopupUsdHint: '用户单笔充值的最低金额。',
+        maxTopupUsd: '最高充值金额 (USD)',
+        maxTopupUsdHint: '用户单笔充值的最高金额。',
+        presetAmounts: '预设充值金额',
+        presetAmountsHint: '充值页面显示的快捷金额选项，JSON数组格式，如 [5,10,20,50,100,200]',
       },
       overloadCooldown: {
         title: '529 过载冷却',
@@ -5114,6 +5176,7 @@ export default {
     inputPrice: '输入',
     outputPrice: '输出',
     perMTokens: '/ 百万 token',
+    officialPrice: '官方价',
     contextWindow: '上下文窗口',
     maxOutput: '最大输出',
     inputFormats: '输入格式',
@@ -5138,7 +5201,8 @@ export default {
     send: '发送',
     placeholder: '输入消息...',
     selectModel: '选择模型',
-    errorStream: '获取回复失败'
+    errorStream: '获取回复失败',
+    noHistory: '暂无对话记录'
   },
 
   tutorial: {

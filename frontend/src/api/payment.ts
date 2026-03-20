@@ -24,12 +24,21 @@ export interface PaymentOrder {
 
 export const paymentAPI = {
   createOrder(data: CreateOrderRequest) {
-    return apiClient.post<CreateOrderResponse>('/payment/create', data)
+    return apiClient.post<CreateOrderResponse>('/payment/orders', data)
   },
   getOrders() {
     return apiClient.get<PaymentOrder[]>('/payment/orders')
   },
+  cancelOrder(orderId: number) {
+    return apiClient.post(`/payment/orders/${orderId}/cancel`)
+  },
+  retryPayment(orderId: number) {
+    return apiClient.post<CreateOrderResponse>(`/payment/orders/${orderId}/pay`)
+  },
   getExchangeRate() {
-    return apiClient.get<{ usd_to_rmb: number }>('/payment/exchange-rate')
+    return apiClient.get<{ rate: number }>('/payment/exchange-rate')
+  },
+  getLimits() {
+    return apiClient.get<{ min_usd: number; max_usd: number; preset_amounts: number[] }>('/payment/limits')
   }
 }

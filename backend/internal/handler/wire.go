@@ -32,6 +32,7 @@ func ProvideAdminHandlers(
 	errorPassthroughHandler *admin.ErrorPassthroughHandler,
 	apiKeyHandler *admin.AdminAPIKeyHandler,
 	scheduledTestHandler *admin.ScheduledTestHandler,
+	adminPaymentHandler *admin.AdminPaymentHandler,
 ) *AdminHandlers {
 	return &AdminHandlers{
 		Dashboard:        dashboardHandler,
@@ -57,6 +58,7 @@ func ProvideAdminHandlers(
 		ErrorPassthrough: errorPassthroughHandler,
 		APIKey:           apiKeyHandler,
 		ScheduledTest:    scheduledTestHandler,
+		Payment:          adminPaymentHandler,
 	}
 }
 
@@ -90,6 +92,7 @@ func ProvideHandlers(
 	_ *service.IdempotencyCleanupService,
 	paymentHandler *PaymentHandler,
 	chatHandler *ChatHandler,
+	chatHistoryHandler *ChatHistoryHandler,
 	modelCatalogHandler *ModelCatalogHandler,
 ) *Handlers {
 	return &Handlers{
@@ -109,6 +112,7 @@ func ProvideHandlers(
 		Totp:          totpHandler,
 		Payment:       paymentHandler,
 		Chat:          chatHandler,
+		ChatHistory:   chatHistoryHandler,
 		ModelCatalog:  modelCatalogHandler,
 	}
 }
@@ -130,6 +134,7 @@ var ProviderSet = wire.NewSet(
 	ProvideSettingHandler,
 	NewPaymentHandler,
 	NewChatHandler,
+	NewChatHistoryHandler,
 	NewModelCatalogHandler,
 
 	// Admin handlers
@@ -156,6 +161,7 @@ var ProviderSet = wire.NewSet(
 	admin.NewErrorPassthroughHandler,
 	admin.NewAdminAPIKeyHandler,
 	admin.NewScheduledTestHandler,
+	admin.NewAdminPaymentHandler,
 
 	// AdminHandlers and Handlers constructors
 	ProvideAdminHandlers,

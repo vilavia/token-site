@@ -3,59 +3,83 @@ package service
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/Wei-Shaw/sub2api/internal/pkg/pagination"
 )
 
 // ChatService provides web chat functionality for JWT-authenticated users.
-// It resolves the appropriate API key for a given model and user, creating
-// an internal "__web_chat__" key if none exists.
 type ChatService struct {
 	gatewayService *GatewayService
 	apiKeyService  *APIKeyService
+	billing        *BillingService
 }
 
 // NewChatService creates a new ChatService.
-func NewChatService(gatewayService *GatewayService, apiKeyService *APIKeyService) *ChatService {
+func NewChatService(gatewayService *GatewayService, apiKeyService *APIKeyService, billing *BillingService) *ChatService {
 	return &ChatService{
 		gatewayService: gatewayService,
 		apiKeyService:  apiKeyService,
+		billing:        billing,
 	}
 }
 
-// GetAvailableChatModels returns model IDs available to the user via their existing API keys.
-// It collects all group IDs from the user's active keys and aggregates models from each group.
+// GetAvailableChatModels returns model IDs available to the user for web chat.
+// Shows all models that are dynamically available and have valid pricing.
 func (s *ChatService) GetAvailableChatModels(ctx context.Context, userID int64) ([]string, error) {
+	modelSet := make(map[string]bool)
+
+	// 1. Collect models from user's existing API keys
 	keys, _, err := s.apiKeyService.List(ctx, userID, pagination.DefaultPagination(), APIKeyListFilters{})
 	if err != nil {
 		return nil, fmt.Errorf("list user api keys: %w", err)
 	}
-
-	// Collect unique group IDs from the user's keys.
 	seen := make(map[int64]bool)
-	var groupIDs []*int64
 	for i := range keys {
 		k := &keys[i]
 		if k.GroupID != nil && !seen[*k.GroupID] {
 			seen[*k.GroupID] = true
-			gid := *k.GroupID
-			groupIDs = append(groupIDs, &gid)
+			models := s.gatewayService.GetAvailableModels(ctx, k.GroupID, "")
+			for _, m := range models {
+				modelSet[m] = true
+			}
 		}
 	}
 
-	// Always include models available with no group restriction.
-	modelSet := make(map[string]bool)
-	for _, gid := range groupIDs {
-		models := s.gatewayService.GetAvailableModels(ctx, gid, "")
-		for _, m := range models {
-			modelSet[m] = true
+	// 2. Also check all groups the user can access (even without existing keys)
+	availableGroups, err := s.apiKeyService.GetAvailableGroups(ctx, userID)
+	if err == nil {
+		for _, g := range availableGroups {
+			gid := g.ID
+			if !seen[gid] {
+				seen[gid] = true
+				models := s.gatewayService.GetAvailableModels(ctx, &gid, "")
+				for _, m := range models {
+					modelSet[m] = true
+				}
+			}
 		}
 	}
 
-	result := make([]string, 0, len(modelSet))
+	// 3. Also include globally available models (no group restriction)
+	globalModels := s.gatewayService.GetAvailableModels(ctx, nil, "")
+	for _, m := range globalModels {
+		modelSet[m] = true
+	}
+
+	// 4. Filter: only mainstream models with valid pricing (same rules as catalog)
+	result := make([]string, 0)
 	for m := range modelSet {
-		result = append(result, m)
+		if !isDisplayModel(m) {
+			continue
+		}
+		if pricing, err := s.billing.GetModelPricing(m); err == nil && pricing != nil {
+			if pricing.InputPricePerToken > 0 || pricing.OutputPricePerToken > 0 {
+				result = append(result, m)
+			}
+		}
 	}
+	sort.Strings(result)
 	return result, nil
 }
 
@@ -77,7 +101,6 @@ func (s *ChatService) FindOrCreateAPIKeyForModel(ctx context.Context, userID int
 		models := s.gatewayService.GetAvailableModels(ctx, k.GroupID, "")
 		for _, m := range models {
 			if m == modelID {
-				// Found a suitable key — load full key (with User/Group populated).
 				full, err := s.apiKeyService.GetByID(ctx, k.ID)
 				if err != nil {
 					return nil, fmt.Errorf("get api key by id: %w", err)
@@ -101,7 +124,6 @@ func (s *ChatService) FindOrCreateAPIKeyForModel(ctx context.Context, userID int
 		return nil, fmt.Errorf("create web chat api key: %w", err)
 	}
 
-	// Load full object so User/Group are populated.
 	full, err := s.apiKeyService.GetByID(ctx, created.ID)
 	if err != nil {
 		return nil, fmt.Errorf("get created api key: %w", err)
@@ -109,8 +131,7 @@ func (s *ChatService) FindOrCreateAPIKeyForModel(ctx context.Context, userID int
 	return full, nil
 }
 
-// findGroupForModel returns a group ID that serves the given model and is accessible
-// to the user, or nil if the model is available without a group restriction.
+// findGroupForModel returns a group ID that serves the given model.
 func (s *ChatService) findGroupForModel(ctx context.Context, userID int64, modelID string) (*int64, error) {
 	availableGroups, err := s.apiKeyService.GetAvailableGroups(ctx, userID)
 	if err != nil {

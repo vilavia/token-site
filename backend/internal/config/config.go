@@ -1213,6 +1213,15 @@ func setDefaults() {
 	viper.SetDefault("linuxdo_connect.userinfo_id_path", "")
 	viper.SetDefault("linuxdo_connect.userinfo_username_path", "")
 
+	// Epay (易支付)
+	viper.SetDefault("epay.enabled", false)
+	viper.SetDefault("epay.api_url", "")
+	viper.SetDefault("epay.pid", 0)
+	viper.SetDefault("epay.key", "")
+	viper.SetDefault("epay.notify_url", "")
+	viper.SetDefault("epay.return_url", "")
+	viper.SetDefault("epay.usd_to_rmb", 7.2)
+
 	// Database
 	viper.SetDefault("database.host", "localhost")
 	viper.SetDefault("database.port", 5432)

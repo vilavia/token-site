@@ -108,6 +108,7 @@ const (
 
 	// OEM设置
 	SettingKeySoraClientEnabled           = "sora_client_enabled"           // 是否启用 Sora 客户端（管理员手动控制）
+	SettingKeyChatEnabled                = "chat_enabled"                  // 是否启用在线对话功能
 	SettingKeySiteName                    = "site_name"                     // 网站名称
 	SettingKeySiteLogo                    = "site_logo"                     // 网站Logo (base64)
 	SettingKeySiteSubtitle                = "site_subtitle"                 // 网站副标题
@@ -234,6 +235,18 @@ const (
 
 	// SettingKeyBackendModeEnabled Backend 模式：禁用用户注册和自助服务，仅管理员可登录
 	SettingKeyBackendModeEnabled = "backend_mode_enabled"
+
+	// 支付设置 (易支付)
+	SettingKeyEpayEnabled   = "epay_enabled"
+	SettingKeyEpayAPIUrl    = "epay_api_url"
+	SettingKeyEpayPID       = "epay_pid"
+	SettingKeyEpayKey       = "epay_key"
+	SettingKeyEpayNotifyURL = "epay_notify_url"
+	SettingKeyEpayReturnURL = "epay_return_url"
+	SettingKeyEpayUSDToRMB      = "epay_usd_to_rmb"
+	SettingKeyEpayMinTopupUSD    = "epay_min_topup_usd"    // 最低充值金额(USD)
+	SettingKeyEpayMaxTopupUSD    = "epay_max_topup_usd"    // 最高充值金额(USD)
+	SettingKeyEpayPresetAmounts  = "epay_preset_amounts"   // 预设充值金额(JSON数组, 如 [5,10,20,50,100,200])
 )
 
 // AdminAPIKeyPrefix is the prefix for admin API keys (distinct from user "sk-" keys).

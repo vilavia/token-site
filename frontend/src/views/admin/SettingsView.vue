@@ -1419,6 +1419,17 @@
               </div>
               <Toggle v-model="form.sora_client_enabled" />
             </div>
+
+            <!-- Chat Enabled -->
+            <div class="flex items-center justify-between py-3">
+              <div>
+                <label class="input-label">{{ t('admin.settings.chat.enabled') }}</label>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.chat.enabledHint') }}
+                </p>
+              </div>
+              <Toggle v-model="form.chat_enabled" />
+            </div>
           </div>
         </div>
 
@@ -1766,6 +1777,197 @@
         </div>
         </div><!-- /Tab: Email -->
 
+        <!-- Tab: Payment (Epay) -->
+        <div v-show="activeTab === 'payment'" class="space-y-6">
+        <div class="card">
+          <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ t('admin.settings.payment.title') }}
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {{ t('admin.settings.payment.description') }}
+            </p>
+          </div>
+          <div class="space-y-5 p-6">
+            <!-- Enable Payment -->
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="font-medium text-gray-900 dark:text-white">{{
+                  t('admin.settings.payment.enabled')
+                }}</label>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.enabledHint') }}
+                </p>
+              </div>
+              <Toggle v-model="form.epay_enabled" />
+            </div>
+
+            <!-- Payment Config Fields - Only show when enabled -->
+            <div
+              v-if="form.epay_enabled"
+              class="space-y-4 border-t border-gray-100 pt-4 dark:border-dark-700"
+            >
+              <!-- API URL -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.apiUrl') }}
+                </label>
+                <input
+                  v-model="form.epay_api_url"
+                  type="text"
+                  class="input"
+                  placeholder="https://pay.example.com"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.apiUrlHint') }}
+                </p>
+              </div>
+
+              <!-- PID (Merchant ID) -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.pid') }}
+                </label>
+                <input
+                  v-model.number="form.epay_pid"
+                  type="number"
+                  min="0"
+                  class="input w-48"
+                  placeholder="1000"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.pidHint') }}
+                </p>
+              </div>
+
+              <!-- Key -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.key') }}
+                  <span
+                    v-if="form.epay_key_configured"
+                    class="ml-2 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  >
+                    {{ t('admin.settings.payment.keyConfigured') }}
+                  </span>
+                </label>
+                <input
+                  v-model="form.epay_key"
+                  type="password"
+                  class="input"
+                  :placeholder="form.epay_key_configured ? t('admin.settings.payment.keyPlaceholderConfigured') : t('admin.settings.payment.keyPlaceholder')"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.keyHint') }}
+                </p>
+              </div>
+
+              <!-- Notify URL -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.notifyUrl') }}
+                </label>
+                <input
+                  v-model="form.epay_notify_url"
+                  type="text"
+                  class="input"
+                  placeholder="https://your-domain.com/api/v1/payment/notify"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.notifyUrlHint') }}
+                </p>
+              </div>
+
+              <!-- Return URL -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.returnUrl') }}
+                </label>
+                <input
+                  v-model="form.epay_return_url"
+                  type="text"
+                  class="input"
+                  placeholder="https://your-domain.com/topup?status=success"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.returnUrlHint') }}
+                </p>
+              </div>
+
+              <!-- USD to RMB Exchange Rate -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.usdToRmb') }}
+                </label>
+                <input
+                  v-model.number="form.epay_usd_to_rmb"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="input w-48"
+                  placeholder="7.20"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.usdToRmbHint') }}
+                </p>
+              </div>
+
+              <!-- Min Topup Amount (USD) -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.minTopupUsd') }}
+                </label>
+                <input
+                  v-model.number="form.epay_min_topup_usd"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="input w-48"
+                  placeholder="1.00"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.minTopupUsdHint') }}
+                </p>
+              </div>
+
+              <!-- Max Topup Amount (USD) -->
+              <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {{ t('admin.settings.payment.maxTopupUsd') }}
+                </label>
+                <input
+                  v-model.number="form.epay_max_topup_usd"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="input w-48"
+                  placeholder="500.00"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.maxTopupUsdHint') }}
+                </p>
+              </div>
+
+              <!-- Preset Amounts -->
+              <div>
+                <label class="input-label">
+                  {{ t('admin.settings.payment.presetAmounts') }}
+                </label>
+                <input
+                  v-model="form.epay_preset_amounts"
+                  type="text"
+                  class="input"
+                  placeholder="[5,10,20,50,100,200]"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('admin.settings.payment.presetAmountsHint') }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div><!-- /Tab: Payment -->
+
         <!-- Tab: Backup -->
         <div v-show="activeTab === 'backup'">
           <BackupSettings />
@@ -1835,7 +2037,7 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const adminSettingsStore = useAdminSettingsStore()
 
-type SettingsTab = 'general' | 'security' | 'users' | 'gateway' | 'email' | 'backup' | 'data'
+type SettingsTab = 'general' | 'security' | 'users' | 'gateway' | 'email' | 'payment' | 'backup' | 'data'
 const activeTab = ref<SettingsTab>('general')
 const settingsTabs = [
   { key: 'general'  as SettingsTab, icon: 'home'   as const },
@@ -1843,6 +2045,7 @@ const settingsTabs = [
   { key: 'users'    as SettingsTab, icon: 'user'   as const },
   { key: 'gateway'  as SettingsTab, icon: 'server' as const },
   { key: 'email'    as SettingsTab, icon: 'mail'   as const },
+  { key: 'payment'  as SettingsTab, icon: 'creditCard' as const },
   { key: 'backup'   as SettingsTab, icon: 'database' as const },
   { key: 'data'     as SettingsTab, icon: 'cube'     as const },
 ]
@@ -1918,6 +2121,7 @@ type SettingsForm = SystemSettings & {
   smtp_password: string
   turnstile_secret_key: string
   linuxdo_connect_client_secret: string
+  epay_key: string
 }
 
 const form = reactive<SettingsForm>({
@@ -1944,6 +2148,7 @@ const form = reactive<SettingsForm>({
   purchase_subscription_enabled: false,
   purchase_subscription_url: '',
   sora_client_enabled: false,
+  chat_enabled: true,
   custom_menu_items: [] as Array<{id: string; label: string; icon_svg: string; url: string; visibility: 'user' | 'admin'; sort_order: number}>,
   frontend_url: '',
   smtp_host: '',
@@ -1983,7 +2188,19 @@ const form = reactive<SettingsForm>({
   min_claude_code_version: '',
   max_claude_code_version: '',
   // 分组隔离
-  allow_ungrouped_key_scheduling: false
+  allow_ungrouped_key_scheduling: false,
+  // Payment (Epay)
+  epay_enabled: false,
+  epay_api_url: '',
+  epay_pid: 0,
+  epay_key: '',
+  epay_key_configured: false,
+  epay_notify_url: '',
+  epay_return_url: '',
+  epay_usd_to_rmb: 7.2,
+  epay_min_topup_usd: 1.0,
+  epay_max_topup_usd: 500.0,
+  epay_preset_amounts: '[5,10,20,50,100,200]'
 })
 
 const defaultSubscriptionGroupOptions = computed<DefaultSubscriptionGroupOption[]>(() =>
@@ -2135,6 +2352,7 @@ async function loadSettings() {
     form.smtp_password = ''
     form.turnstile_secret_key = ''
     form.linuxdo_connect_client_secret = ''
+    form.epay_key = ''
   } catch (error: any) {
     appStore.showError(
       t('admin.settings.failedToLoad') + ': ' + (error.message || t('common.unknownError'))
@@ -2223,6 +2441,7 @@ async function saveSettings() {
       purchase_subscription_enabled: form.purchase_subscription_enabled,
       purchase_subscription_url: form.purchase_subscription_url,
       sora_client_enabled: form.sora_client_enabled,
+      chat_enabled: form.chat_enabled,
       custom_menu_items: form.custom_menu_items,
       frontend_url: form.frontend_url,
       smtp_host: form.smtp_host,
@@ -2248,7 +2467,17 @@ async function saveSettings() {
       identity_patch_prompt: form.identity_patch_prompt,
       min_claude_code_version: form.min_claude_code_version,
       max_claude_code_version: form.max_claude_code_version,
-      allow_ungrouped_key_scheduling: form.allow_ungrouped_key_scheduling
+      allow_ungrouped_key_scheduling: form.allow_ungrouped_key_scheduling,
+      epay_enabled: form.epay_enabled,
+      epay_api_url: form.epay_api_url,
+      epay_pid: form.epay_pid,
+      epay_key: form.epay_key || undefined,
+      epay_notify_url: form.epay_notify_url,
+      epay_return_url: form.epay_return_url,
+      epay_usd_to_rmb: form.epay_usd_to_rmb,
+      epay_min_topup_usd: form.epay_min_topup_usd,
+      epay_max_topup_usd: form.epay_max_topup_usd,
+      epay_preset_amounts: form.epay_preset_amounts
     }
     const updated = await adminAPI.settings.updateSettings(payload)
     Object.assign(form, updated)
@@ -2259,6 +2488,7 @@ async function saveSettings() {
     form.smtp_password = ''
     form.turnstile_secret_key = ''
     form.linuxdo_connect_client_secret = ''
+    form.epay_key = ''
     // Refresh cached settings so sidebar/header update immediately
     await appStore.fetchPublicSettings(true)
     await adminSettingsStore.fetch(true)

@@ -138,6 +138,104 @@ func (c *EpayClient) GetExchangeRate() float64 {
 	return c.cfg.USDToRMB
 }
 
+// GetRuntimeConfig returns an EpayConfig derived from DB settings (if enabled), falling back to the static config.
+func (c *EpayClient) GetRuntimeConfig(settings *SystemSettings) config.EpayConfig {
+	if settings != nil && settings.EpayEnabled {
+		cfg := config.EpayConfig{
+			Enabled:   true,
+			APIUrl:    settings.EpayAPIUrl,
+			PID:       settings.EpayPID,
+			Key:       settings.EpayKey,
+			NotifyURL: settings.EpayNotifyURL,
+			ReturnURL: settings.EpayReturnURL,
+			USDToRMB:  settings.EpayUSDToRMB,
+		}
+		return cfg
+	}
+	return c.cfg
+}
+
+// CreatePayURLWithConfig builds the payment URL using the given config (for runtime DB settings).
+func (c *EpayClient) CreatePayURLWithConfig(cfg config.EpayConfig, orderNo string, amountRMB float64, payType string, itemName string) (string, error) {
+	params := map[string]string{
+		"pid":          fmt.Sprintf("%d", cfg.PID),
+		"type":         payType,
+		"out_trade_no": orderNo,
+		"notify_url":   cfg.NotifyURL,
+		"return_url":   cfg.ReturnURL,
+		"name":         itemName,
+		"money":        fmt.Sprintf("%.2f", amountRMB),
+	}
+
+	params["sign"] = c.signWithKey(params, cfg.Key)
+	params["sign_type"] = "MD5"
+
+	u, err := url.Parse(cfg.APIUrl + "/submit.php")
+	if err != nil {
+		return "", fmt.Errorf("parse epay api url: %w", err)
+	}
+
+	q := u.Query()
+	for k, v := range params {
+		q.Set(k, v)
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
+
+// VerifyNotifyWithConfig verifies the MD5 signature using the given config.
+func (c *EpayClient) VerifyNotifyWithConfig(cfg config.EpayConfig, params map[string]string) bool {
+	receivedSign, ok := params["sign"]
+	if !ok {
+		return false
+	}
+
+	filtered := make(map[string]string, len(params))
+	for k, v := range params {
+		if k == "sign" || k == "sign_type" {
+			continue
+		}
+		if v == "" {
+			continue
+		}
+		filtered[k] = v
+	}
+
+	expectedSign := c.signWithKey(filtered, cfg.Key)
+	return receivedSign == expectedSign
+}
+
+// signWithKey generates MD5 signature using the provided merchant key.
+func (c *EpayClient) signWithKey(params map[string]string, key string) string {
+	keys := make([]string, 0, len(params))
+	for k := range params {
+		if k == "sign" || k == "sign_type" {
+			continue
+		}
+		if params[k] == "" {
+			continue
+		}
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var buf strings.Builder
+	for i, k := range keys {
+		if i > 0 {
+			buf.WriteByte('&')
+		}
+		buf.WriteString(k)
+		buf.WriteByte('=')
+		buf.WriteString(params[k])
+	}
+
+	buf.WriteString(key)
+
+	hash := md5.Sum([]byte(buf.String()))
+	return hex.EncodeToString(hash[:])
+}
+
 // sign generates the MD5 signature per 易支付 spec.
 // Steps: sort keys alphabetically, concatenate as key=value&, append merchant key, MD5 hash.
 func (c *EpayClient) sign(params map[string]string) string {

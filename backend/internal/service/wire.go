@@ -492,5 +492,6 @@ var ProviderSet = wire.NewSet(
 	NewEpayClient,
 	NewPaymentService,
 	NewChatService,
+	NewChatHistoryService,
 	NewModelCatalogService,
 )

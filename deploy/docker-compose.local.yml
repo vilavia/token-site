@@ -116,6 +116,17 @@ services:
       - TZ=${TZ:-Asia/Shanghai}
 
       # =======================================================================
+      # 易支付 Payment Configuration
+      # =======================================================================
+      - EPAY_ENABLED=${EPAY_ENABLED:-false}
+      - EPAY_API_URL=${EPAY_API_URL:-}
+      - EPAY_PID=${EPAY_PID:-0}
+      - EPAY_KEY=${EPAY_KEY:-}
+      - EPAY_NOTIFY_URL=${EPAY_NOTIFY_URL:-}
+      - EPAY_RETURN_URL=${EPAY_RETURN_URL:-}
+      - EPAY_USD_TO_RMB=${EPAY_USD_TO_RMB:-7.2}
+
+      # =======================================================================
       # Gemini OAuth Configuration (for Gemini accounts)
       # =======================================================================
       - GEMINI_OAUTH_CLIENT_ID=${GEMINI_OAUTH_CLIENT_ID:-}

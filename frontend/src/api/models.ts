@@ -5,8 +5,10 @@ export interface ModelInfo {
   display_name: string
   provider: string
   context_window: number
-  input_price_mtok: number
-  output_price_mtok: number
+  input_price_per_mtok: number
+  output_price_per_mtok: number
+  official_input_price_per_mtok: number
+  official_output_price_per_mtok: number
   input_formats: string[]
   output_formats: string[]
   description: string

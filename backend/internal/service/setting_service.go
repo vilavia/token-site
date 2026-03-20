@@ -149,6 +149,7 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		SettingKeyPurchaseSubscriptionEnabled,
 		SettingKeyPurchaseSubscriptionURL,
 		SettingKeySoraClientEnabled,
+		SettingKeyChatEnabled,
 		SettingKeyCustomMenuItems,
 		SettingKeyLinuxDoConnectEnabled,
 		SettingKeyBackendModeEnabled,
@@ -194,6 +195,7 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		PurchaseSubscriptionEnabled:      settings[SettingKeyPurchaseSubscriptionEnabled] == "true",
 		PurchaseSubscriptionURL:          strings.TrimSpace(settings[SettingKeyPurchaseSubscriptionURL]),
 		SoraClientEnabled:                settings[SettingKeySoraClientEnabled] == "true",
+		ChatEnabled:                      settings[SettingKeyChatEnabled] != "false", // default true
 		CustomMenuItems:                  settings[SettingKeyCustomMenuItems],
 		LinuxDoOAuthEnabled:              linuxDoEnabled,
 		BackendModeEnabled:               settings[SettingKeyBackendModeEnabled] == "true",
@@ -246,6 +248,7 @@ func (s *SettingService) GetPublicSettingsForInjection(ctx context.Context) (any
 		PurchaseSubscriptionEnabled      bool            `json:"purchase_subscription_enabled"`
 		PurchaseSubscriptionURL          string          `json:"purchase_subscription_url,omitempty"`
 		SoraClientEnabled                bool            `json:"sora_client_enabled"`
+		ChatEnabled                      bool            `json:"chat_enabled"`
 		CustomMenuItems                  json.RawMessage `json:"custom_menu_items"`
 		LinuxDoOAuthEnabled              bool            `json:"linuxdo_oauth_enabled"`
 		BackendModeEnabled               bool            `json:"backend_mode_enabled"`
@@ -271,6 +274,7 @@ func (s *SettingService) GetPublicSettingsForInjection(ctx context.Context) (any
 		PurchaseSubscriptionEnabled:      settings.PurchaseSubscriptionEnabled,
 		PurchaseSubscriptionURL:          settings.PurchaseSubscriptionURL,
 		SoraClientEnabled:                settings.SoraClientEnabled,
+		ChatEnabled:                      settings.ChatEnabled,
 		CustomMenuItems:                  filterUserVisibleMenuItems(settings.CustomMenuItems),
 		LinuxDoOAuthEnabled:              settings.LinuxDoOAuthEnabled,
 		BackendModeEnabled:               settings.BackendModeEnabled,
@@ -453,6 +457,7 @@ func (s *SettingService) UpdateSettings(ctx context.Context, settings *SystemSet
 	updates[SettingKeyPurchaseSubscriptionEnabled] = strconv.FormatBool(settings.PurchaseSubscriptionEnabled)
 	updates[SettingKeyPurchaseSubscriptionURL] = strings.TrimSpace(settings.PurchaseSubscriptionURL)
 	updates[SettingKeySoraClientEnabled] = strconv.FormatBool(settings.SoraClientEnabled)
+	updates[SettingKeyChatEnabled] = strconv.FormatBool(settings.ChatEnabled)
 	updates[SettingKeyCustomMenuItems] = settings.CustomMenuItems
 
 	// 默认配置
@@ -492,6 +497,22 @@ func (s *SettingService) UpdateSettings(ctx context.Context, settings *SystemSet
 
 	// Backend Mode
 	updates[SettingKeyBackendModeEnabled] = strconv.FormatBool(settings.BackendModeEnabled)
+
+	// 支付设置 (易支付)
+	updates[SettingKeyEpayEnabled] = strconv.FormatBool(settings.EpayEnabled)
+	updates[SettingKeyEpayAPIUrl] = settings.EpayAPIUrl
+	updates[SettingKeyEpayPID] = strconv.Itoa(settings.EpayPID)
+	if settings.EpayKey != "" {
+		updates[SettingKeyEpayKey] = settings.EpayKey
+	}
+	updates[SettingKeyEpayNotifyURL] = settings.EpayNotifyURL
+	updates[SettingKeyEpayReturnURL] = settings.EpayReturnURL
+	updates[SettingKeyEpayUSDToRMB] = strconv.FormatFloat(settings.EpayUSDToRMB, 'f', 4, 64)
+	updates[SettingKeyEpayMinTopupUSD] = strconv.FormatFloat(settings.EpayMinTopupUSD, 'f', 2, 64)
+	updates[SettingKeyEpayMaxTopupUSD] = strconv.FormatFloat(settings.EpayMaxTopupUSD, 'f', 2, 64)
+	if settings.EpayPresetAmounts != "" {
+		updates[SettingKeyEpayPresetAmounts] = settings.EpayPresetAmounts
+	}
 
 	err = s.settingRepo.SetMultiple(ctx, updates)
 	if err == nil {
@@ -739,6 +760,7 @@ func (s *SettingService) InitializeDefaultSettings(ctx context.Context) error {
 		SettingKeyPurchaseSubscriptionEnabled:      "false",
 		SettingKeyPurchaseSubscriptionURL:          "",
 		SettingKeySoraClientEnabled:                "false",
+		SettingKeyChatEnabled:                      "true",
 		SettingKeyCustomMenuItems:                  "[]",
 		SettingKeyDefaultConcurrency:               strconv.Itoa(s.cfg.Default.UserConcurrency),
 		SettingKeyDefaultBalance:                   strconv.FormatFloat(s.cfg.Default.UserBalance, 'f', 8, 64),
@@ -804,6 +826,7 @@ func (s *SettingService) parseSettings(settings map[string]string) *SystemSettin
 		PurchaseSubscriptionEnabled:      settings[SettingKeyPurchaseSubscriptionEnabled] == "true",
 		PurchaseSubscriptionURL:          strings.TrimSpace(settings[SettingKeyPurchaseSubscriptionURL]),
 		SoraClientEnabled:                settings[SettingKeySoraClientEnabled] == "true",
+		ChatEnabled:                      settings[SettingKeyChatEnabled] != "false",
 		CustomMenuItems:                  settings[SettingKeyCustomMenuItems],
 		BackendModeEnabled:               settings[SettingKeyBackendModeEnabled] == "true",
 	}
@@ -903,6 +926,80 @@ func (s *SettingService) parseSettings(settings map[string]string) *SystemSettin
 
 	// 分组隔离
 	result.AllowUngroupedKeyScheduling = settings[SettingKeyAllowUngroupedKeyScheduling] == "true"
+
+	// 支付设置 (易支付) — 兼容 config.yaml/env，DB 设置优先
+	epayBase := config.EpayConfig{}
+	if s.cfg != nil {
+		epayBase = s.cfg.Epay
+	}
+
+	if raw, ok := settings[SettingKeyEpayEnabled]; ok {
+		result.EpayEnabled = raw == "true"
+	} else {
+		result.EpayEnabled = epayBase.Enabled
+	}
+
+	if v, ok := settings[SettingKeyEpayAPIUrl]; ok && strings.TrimSpace(v) != "" {
+		result.EpayAPIUrl = strings.TrimSpace(v)
+	} else {
+		result.EpayAPIUrl = epayBase.APIUrl
+	}
+
+	if v, ok := settings[SettingKeyEpayPID]; ok && strings.TrimSpace(v) != "" {
+		if pid, err := strconv.Atoi(v); err == nil {
+			result.EpayPID = pid
+		}
+	} else {
+		result.EpayPID = epayBase.PID
+	}
+
+	result.EpayKey = strings.TrimSpace(settings[SettingKeyEpayKey])
+	if result.EpayKey == "" {
+		result.EpayKey = epayBase.Key
+	}
+	result.EpayKeyConfigured = result.EpayKey != ""
+
+	if v, ok := settings[SettingKeyEpayNotifyURL]; ok && strings.TrimSpace(v) != "" {
+		result.EpayNotifyURL = strings.TrimSpace(v)
+	} else {
+		result.EpayNotifyURL = epayBase.NotifyURL
+	}
+
+	if v, ok := settings[SettingKeyEpayReturnURL]; ok && strings.TrimSpace(v) != "" {
+		result.EpayReturnURL = strings.TrimSpace(v)
+	} else {
+		result.EpayReturnURL = epayBase.ReturnURL
+	}
+
+	if v, ok := settings[SettingKeyEpayUSDToRMB]; ok && strings.TrimSpace(v) != "" {
+		if rate, err := strconv.ParseFloat(v, 64); err == nil {
+			result.EpayUSDToRMB = rate
+		}
+	} else {
+		result.EpayUSDToRMB = epayBase.USDToRMB
+	}
+
+	if v, ok := settings[SettingKeyEpayMinTopupUSD]; ok && strings.TrimSpace(v) != "" {
+		if val, err := strconv.ParseFloat(v, 64); err == nil {
+			result.EpayMinTopupUSD = val
+		}
+	} else {
+		result.EpayMinTopupUSD = 1.0
+	}
+
+	if v, ok := settings[SettingKeyEpayMaxTopupUSD]; ok && strings.TrimSpace(v) != "" {
+		if val, err := strconv.ParseFloat(v, 64); err == nil {
+			result.EpayMaxTopupUSD = val
+		}
+	} else {
+		result.EpayMaxTopupUSD = 500.0
+	}
+
+	if v, ok := settings[SettingKeyEpayPresetAmounts]; ok && strings.TrimSpace(v) != "" {
+		result.EpayPresetAmounts = v
+	} else {
+		result.EpayPresetAmounts = "[5,10,20,50,100,200]"
+	}
 
 	return result
 }

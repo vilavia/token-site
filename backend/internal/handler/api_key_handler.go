@@ -98,6 +98,10 @@ func (h *APIKeyHandler) List(c *gin.Context) {
 
 	out := make([]dto.APIKey, 0, len(keys))
 	for i := range keys {
+		// Hide internal web chat keys from user's key list
+		if keys[i].Name == "__web_chat__" {
+			continue
+		}
 		out = append(out, *dto.APIKeyFromService(&keys[i]))
 	}
 	response.Paginated(c, out, result.Total, page, pageSize)

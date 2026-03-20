@@ -113,6 +113,6 @@ func registerRoutes(
 	routes.RegisterAdminRoutes(v1, h, adminAuth)
 	routes.RegisterGatewayRoutes(r, h, apiKeyAuth, apiKeyService, subscriptionService, opsService, settingService, cfg)
 	routes.RegisterPaymentRoutes(v1, h.Payment, jwtAuth, settingService)
-	routes.RegisterChatRoutes(v1, h.Chat, jwtAuth)
+	routes.RegisterChatRoutes(v1, h.Chat, h.ChatHistory, jwtAuth)
 	routes.RegisterModelRoutes(v1, h.ModelCatalog, jwtAuth)
 }

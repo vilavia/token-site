@@ -45,6 +45,7 @@
         <!-- Action buttons -->
         <div class="mt-6 flex flex-wrap gap-3">
           <button
+            v-if="chatEnabled"
             type="button"
             @click="router.push(`/chat?model=${encodeURIComponent(model.id)}`)"
             class="btn btn-primary"
@@ -127,18 +128,24 @@
               {{ t('models.inputPrice') }}
             </dt>
             <dd class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              ${{ model.input_price_mtok.toFixed(2) }}
+              ${{ model.input_price_per_mtok.toFixed(2) }}
             </dd>
             <dd class="text-xs text-gray-500 dark:text-dark-400">{{ t('models.perMTokens') }}</dd>
+            <dd v-if="model.official_input_price_per_mtok > 0 && model.official_input_price_per_mtok !== model.input_price_per_mtok" class="mt-1 text-xs text-gray-400 dark:text-dark-500">
+              {{ t('models.officialPrice') }}: ${{ model.official_input_price_per_mtok.toFixed(2) }}
+            </dd>
           </div>
           <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-800">
             <dt class="text-xs font-medium text-gray-500 dark:text-dark-400 uppercase tracking-wide">
               {{ t('models.outputPrice') }}
             </dt>
             <dd class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              ${{ model.output_price_mtok.toFixed(2) }}
+              ${{ model.output_price_per_mtok.toFixed(2) }}
             </dd>
             <dd class="text-xs text-gray-500 dark:text-dark-400">{{ t('models.perMTokens') }}</dd>
+            <dd v-if="model.official_output_price_per_mtok > 0 && model.official_output_price_per_mtok !== model.output_price_per_mtok" class="mt-1 text-xs text-gray-400 dark:text-dark-500">
+              {{ t('models.officialPrice') }}: ${{ model.official_output_price_per_mtok.toFixed(2) }}
+            </dd>
           </div>
         </dl>
       </div>
@@ -168,16 +175,19 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { modelsAPI, type ModelInfo } from '@/api/models'
+import { useAppStore } from '@/stores/app'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import ApiKeyDialog from '@/components/models/ApiKeyDialog.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 
 const model = ref<ModelInfo | null>(null)
 const loading = ref(false)
 const showApiKeyDialog = ref(false)
+const chatEnabled = computed(() => appStore.cachedPublicSettings?.chat_enabled !== false)
 
 const providerBadgeClass = computed(() => {
   if (!model.value) return ''

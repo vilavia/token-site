@@ -53,7 +53,8 @@
               <input
                 v-model="customAmount"
                 type="number"
-                min="0.01"
+                :min="minTopup"
+                :max="maxTopup"
                 step="0.01"
                 :placeholder="t('topup.enterAmount')"
                 @focus="customAmountActive = true"
@@ -63,6 +64,9 @@
             </div>
             <p v-if="customAmountActive && customAmount && exchangeRate" class="input-hint">
               ≈ ¥{{ (parseFloat(customAmount) * exchangeRate).toFixed(2) }}
+            </p>
+            <p class="mt-1 text-xs text-gray-500 dark:text-dark-400">
+              {{ t('topup.minAmount', { min: minTopup.toFixed(2) }) }} / {{ t('topup.maxAmount', { max: maxTopup.toFixed(2) }) }}
             </p>
           </div>
 
@@ -100,7 +104,7 @@
           <!-- Pay Now Button -->
           <button
             type="button"
-            :disabled="!finalAmount || finalAmount <= 0 || submitting"
+            :disabled="!finalAmount || finalAmount < minTopup || finalAmount > maxTopup || submitting"
             @click="handlePay"
             class="btn btn-primary w-full py-3"
           >
@@ -170,6 +174,7 @@
                   <th class="pb-3 text-left font-medium text-gray-500 dark:text-dark-400">{{ t('topup.amount') }}</th>
                   <th class="pb-3 text-left font-medium text-gray-500 dark:text-dark-400">{{ t('topup.status') }}</th>
                   <th class="pb-3 text-left font-medium text-gray-500 dark:text-dark-400">{{ t('topup.time') }}</th>
+                  <th class="pb-3 text-right font-medium text-gray-500 dark:text-dark-400"></th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50 dark:divide-dark-800">
@@ -199,6 +204,24 @@
                   </td>
                   <td class="py-3 text-xs text-gray-500 dark:text-dark-400">
                     {{ formatDate(order.created_at) }}
+                  </td>
+                  <td class="py-3 text-right space-x-2">
+                    <button
+                      v-if="order.status === 'pending'"
+                      type="button"
+                      class="text-xs text-primary-500 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                      @click="retryPay(order)"
+                    >
+                      {{ t('topup.pay') }}
+                    </button>
+                    <button
+                      v-if="order.status === 'pending'"
+                      type="button"
+                      class="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                      @click="cancelOrder(order)"
+                    >
+                      {{ t('topup.cancel') }}
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -238,12 +261,14 @@ const appStore = useAppStore()
 
 const user = computed(() => authStore.user)
 
-const presetAmounts = [1, 5, 10, 20, 50, 100]
+const presetAmounts = ref<number[]>([5, 10, 20, 50, 100, 200])
 const selectedAmount = ref<number | null>(null)
 const customAmount = ref('')
 const customAmountActive = ref(false)
 const payType = ref<'alipay' | 'wxpay'>('alipay')
 const exchangeRate = ref<number | null>(null)
+const minTopup = ref(1.0)
+const maxTopup = ref(500.0)
 const orders = ref<PaymentOrder[]>([])
 const loadingOrders = ref(false)
 const submitting = ref(false)
@@ -274,9 +299,22 @@ function onCustomAmountInput() {
 async function fetchExchangeRate() {
   try {
     const res = await paymentAPI.getExchangeRate()
-    exchangeRate.value = res.data.usd_to_rmb
+    exchangeRate.value = res.data.rate
   } catch (error) {
     console.error('Failed to fetch exchange rate:', error)
+  }
+}
+
+async function fetchLimits() {
+  try {
+    const res = await paymentAPI.getLimits()
+    minTopup.value = res.data.min_usd
+    maxTopup.value = res.data.max_usd
+    if (res.data.preset_amounts && Array.isArray(res.data.preset_amounts) && res.data.preset_amounts.length > 0) {
+      presetAmounts.value = res.data.preset_amounts
+    }
+  } catch (error) {
+    console.error('Failed to fetch limits:', error)
   }
 }
 
@@ -304,14 +342,34 @@ async function handlePay() {
     })
     window.location.href = res.data.pay_url
   } catch (error: any) {
-    appStore.showError(error.response?.data?.detail || 'Failed to create order')
+    appStore.showError(error?.message || error?.response?.data?.message || t('topup.createOrderFailed'))
   } finally {
     submitting.value = false
   }
 }
 
+async function retryPay(order: PaymentOrder) {
+  try {
+    const res = await paymentAPI.retryPayment(order.id)
+    window.location.href = res.data.pay_url
+  } catch (error: any) {
+    appStore.showError(error?.message || 'Failed to create payment')
+  }
+}
+
+async function cancelOrder(order: PaymentOrder) {
+  if (!confirm(t('topup.confirmCancel'))) return
+  try {
+    await paymentAPI.cancelOrder(order.id)
+    await fetchOrders()
+  } catch (error: any) {
+    appStore.showError(error?.message || 'Failed to cancel order')
+  }
+}
+
 onMounted(() => {
   fetchExchangeRate()
+  fetchLimits()
   fetchOrders()
 })
 </script>

@@ -195,12 +195,6 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/tutorial',
-    name: 'Tutorial',
-    component: () => import('@/views/user/TutorialView.vue'),
-    meta: { requiresAuth: true, requiresAdmin: false, title: 'Tutorial', titleKey: 'tutorial.title' }
-  },
-  {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/user/ProfileView.vue'),
@@ -359,6 +353,17 @@ const routes: RouteRecordRaw[] = [
       title: 'System Settings',
       titleKey: 'admin.settings.title',
       descriptionKey: 'admin.settings.description'
+    }
+  },
+  {
+    path: '/admin/orders',
+    name: 'AdminOrders',
+    component: () => import('@/views/admin/OrdersView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'Orders',
+      titleKey: 'admin.orders.title'
     }
   },
   {

@@ -29,6 +29,7 @@ type AdminHandlers struct {
 	ErrorPassthrough *admin.ErrorPassthroughHandler
 	APIKey           *admin.AdminAPIKeyHandler
 	ScheduledTest    *admin.ScheduledTestHandler
+	Payment          *admin.AdminPaymentHandler
 }
 
 // Handlers contains all HTTP handlers
@@ -49,6 +50,7 @@ type Handlers struct {
 	Totp          *TotpHandler
 	Payment       *PaymentHandler
 	Chat          *ChatHandler
+	ChatHistory   *ChatHistoryHandler
 	ModelCatalog  *ModelCatalogHandler
 }
 

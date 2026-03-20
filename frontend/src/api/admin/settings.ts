@@ -41,6 +41,7 @@ export interface SystemSettings {
   purchase_subscription_enabled: boolean
   purchase_subscription_url: string
   sora_client_enabled: boolean
+  chat_enabled: boolean
   backend_mode_enabled: boolean
   custom_menu_items: CustomMenuItem[]
   // SMTP settings
@@ -85,6 +86,18 @@ export interface SystemSettings {
 
   // 分组隔离
   allow_ungrouped_key_scheduling: boolean
+
+  // Payment (Epay)
+  epay_enabled: boolean
+  epay_api_url: string
+  epay_pid: number
+  epay_key_configured: boolean
+  epay_notify_url: string
+  epay_return_url: string
+  epay_usd_to_rmb: number
+  epay_min_topup_usd: number
+  epay_max_topup_usd: number
+  epay_preset_amounts: string
 }
 
 export interface UpdateSettingsRequest {
@@ -110,6 +123,7 @@ export interface UpdateSettingsRequest {
   purchase_subscription_enabled?: boolean
   purchase_subscription_url?: string
   sora_client_enabled?: boolean
+  chat_enabled?: boolean
   backend_mode_enabled?: boolean
   custom_menu_items?: CustomMenuItem[]
   smtp_host?: string
@@ -140,6 +154,18 @@ export interface UpdateSettingsRequest {
   min_claude_code_version?: string
   max_claude_code_version?: string
   allow_ungrouped_key_scheduling?: boolean
+
+  // Payment (Epay)
+  epay_enabled?: boolean
+  epay_api_url?: string
+  epay_pid?: number
+  epay_key?: string
+  epay_notify_url?: string
+  epay_return_url?: string
+  epay_usd_to_rmb?: number
+  epay_min_topup_usd?: number
+  epay_max_topup_usd?: number
+  epay_preset_amounts?: string
 }
 
 /**

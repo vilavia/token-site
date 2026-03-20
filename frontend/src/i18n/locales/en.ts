@@ -356,7 +356,8 @@ export default {
     topUp: 'Top Up',
     models: 'Models',
     chat: 'Chat',
-    tutorial: 'Tutorial'
+    tutorial: 'Tutorial',
+    orders: 'Orders'
   },
 
   // Auth
@@ -825,10 +826,16 @@ export default {
     payNow: 'Pay Now',
     orderHistory: 'Order History',
     noOrders: 'No payment history',
+    createOrderFailed: 'Failed to create order',
+    pay: 'Pay',
+    cancel: 'Cancel',
+    confirmCancel: 'Are you sure you want to cancel this order?',
     orderNo: 'Order',
     amount: 'Amount',
     status: 'Status',
     time: 'Time',
+    minAmount: 'Minimum: ${min}',
+    maxAmount: 'Maximum: ${max}',
   },
 
   // Profile
@@ -1012,6 +1019,29 @@ export default {
       requestsShort: 'Req',
       tokensShort: 'Tok',
       failedToLoad: 'Failed to load dashboard statistics'
+    },
+
+    orders: {
+      title: 'Payment Orders',
+      allOrders: 'All',
+      pending: 'Pending',
+      paid: 'Paid',
+      cancelled: 'Cancelled',
+      userId: 'User ID',
+      orderNo: 'Order No',
+      amountUsd: 'Amount (USD)',
+      amountRmb: 'Amount (RMB)',
+      status: 'Status',
+      payType: 'Pay Type',
+      time: 'Time',
+      actions: 'Actions',
+      markAsPaid: 'Mark as Paid',
+      confirmMarkPaid: 'Are you sure you want to mark this order as paid? This will credit the user\'s balance.',
+      markPaidSuccess: 'Order marked as paid',
+      markPaidFailed: 'Failed to mark order as paid',
+      noOrders: 'No orders found',
+      filterByUser: 'Filter by User ID',
+      viewOrders: 'Orders',
     },
 
     backup: {
@@ -4075,6 +4105,7 @@ export default {
         users: 'Users',
         gateway: 'Gateway',
         email: 'Email',
+        payment: 'Payment',
         backup: 'Backup',
         data: 'Sora Storage',
       },
@@ -4225,6 +4256,10 @@ export default {
         description: 'Control whether to show the Sora client entry in the sidebar',
         enabled: 'Enable Sora Client',
         enabledHint: 'When enabled, the Sora entry will be shown in the sidebar for users to access Sora features'
+      },
+      chat: {
+        enabled: 'Enable Online Chat',
+        enabledHint: 'When disabled, the Chat entry will be hidden from the sidebar'
       },
       customMenu: {
         title: 'Custom Menu Pages',
@@ -4408,6 +4443,33 @@ export default {
           testSuccess: 'Google Drive storage test passed (upload, access, delete all OK)',
           testFailed: 'Google Drive storage test failed'
         }
+      },
+      payment: {
+        title: 'Payment Settings (Epay)',
+        description: 'Configure payment gateway for user top-up functionality.',
+        enabled: 'Enable Payment',
+        enabledHint: 'Allow users to top up their account balance via Epay payment gateway.',
+        apiUrl: 'API URL',
+        apiUrlHint: 'The base URL of your Epay payment gateway (e.g., https://pay.example.com).',
+        pid: 'Merchant ID (PID)',
+        pidHint: 'Your merchant ID assigned by the Epay provider.',
+        key: 'Merchant Key',
+        keyConfigured: 'Configured',
+        keyPlaceholderConfigured: 'Leave empty to keep current key',
+        keyPlaceholder: 'Enter merchant key',
+        keyHint: 'The secret key for signing payment requests. Leave empty to keep the current key.',
+        notifyUrl: 'Notify URL',
+        notifyUrlHint: 'The callback URL for payment notifications (must be accessible from the internet).',
+        returnUrl: 'Return URL',
+        returnUrlHint: 'The URL to redirect users to after payment is completed.',
+        usdToRmb: 'USD to RMB Exchange Rate',
+        usdToRmbHint: 'Exchange rate for converting USD amounts to RMB for payment processing.',
+        minTopupUsd: 'Minimum Top-Up Amount (USD)',
+        minTopupUsdHint: 'The minimum amount a user can top up in a single transaction.',
+        maxTopupUsd: 'Maximum Top-Up Amount (USD)',
+        maxTopupUsdHint: 'The maximum amount a user can top up in a single transaction.',
+        presetAmounts: 'Preset Top-Up Amounts',
+        presetAmountsHint: 'JSON array of preset amounts shown on the top-up page, e.g. [5,10,20,50,100,200]',
       },
       overloadCooldown: {
         title: '529 Overload Cooldown',
@@ -4925,6 +4987,7 @@ export default {
     inputPrice: 'Input',
     outputPrice: 'Output',
     perMTokens: '/ M tokens',
+    officialPrice: 'Official',
     contextWindow: 'Context Window',
     maxOutput: 'Max Output',
     inputFormats: 'Input Formats',
@@ -4949,7 +5012,8 @@ export default {
     send: 'Send',
     placeholder: 'Type a message...',
     selectModel: 'Select a model',
-    errorStream: 'Failed to get response'
+    errorStream: 'Failed to get response',
+    noHistory: 'No conversations yet'
   },
 
   tutorial: {

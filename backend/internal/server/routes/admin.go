@@ -84,6 +84,9 @@ func RegisterAdminRoutes(
 
 		// 定时测试计划
 		registerScheduledTestRoutes(admin, h)
+
+		// 支付订单管理
+		registerPaymentOrderRoutes(admin, h)
 	}
 }
 
@@ -540,6 +543,14 @@ func registerScheduledTestRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 	}
 	// Nested under accounts
 	admin.GET("/accounts/:id/scheduled-test-plans", h.Admin.ScheduledTest.ListByAccount)
+}
+
+func registerPaymentOrderRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
+	payment := admin.Group("/payment")
+	{
+		payment.GET("/orders", h.Admin.Payment.ListOrders)
+		payment.PUT("/orders/:id/status", h.Admin.Payment.UpdateOrderStatus)
+	}
 }
 
 func registerErrorPassthroughRoutes(admin *gin.RouterGroup, h *handler.Handlers) {

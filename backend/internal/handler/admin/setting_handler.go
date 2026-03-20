@@ -109,6 +109,7 @@ func (h *SettingHandler) GetSettings(c *gin.Context) {
 		PurchaseSubscriptionEnabled:          settings.PurchaseSubscriptionEnabled,
 		PurchaseSubscriptionURL:              settings.PurchaseSubscriptionURL,
 		SoraClientEnabled:                    settings.SoraClientEnabled,
+		ChatEnabled:                          settings.ChatEnabled,
 		CustomMenuItems:                      dto.ParseCustomMenuItems(settings.CustomMenuItems),
 		DefaultConcurrency:                   settings.DefaultConcurrency,
 		DefaultBalance:                       settings.DefaultBalance,
@@ -128,6 +129,16 @@ func (h *SettingHandler) GetSettings(c *gin.Context) {
 		MaxClaudeCodeVersion:                 settings.MaxClaudeCodeVersion,
 		AllowUngroupedKeyScheduling:          settings.AllowUngroupedKeyScheduling,
 		BackendModeEnabled:                   settings.BackendModeEnabled,
+		EpayEnabled:                          settings.EpayEnabled,
+		EpayAPIUrl:                           settings.EpayAPIUrl,
+		EpayPID:                              settings.EpayPID,
+		EpayKeyConfigured:                    settings.EpayKeyConfigured,
+		EpayNotifyURL:                        settings.EpayNotifyURL,
+		EpayReturnURL:                        settings.EpayReturnURL,
+		EpayUSDToRMB:                         settings.EpayUSDToRMB,
+		EpayMinTopupUSD:                      settings.EpayMinTopupUSD,
+		EpayMaxTopupUSD:                      settings.EpayMaxTopupUSD,
+		EpayPresetAmounts:                    settings.EpayPresetAmounts,
 	})
 }
 
@@ -175,6 +186,7 @@ type UpdateSettingsRequest struct {
 	PurchaseSubscriptionEnabled *bool                 `json:"purchase_subscription_enabled"`
 	PurchaseSubscriptionURL     *string               `json:"purchase_subscription_url"`
 	SoraClientEnabled           bool                  `json:"sora_client_enabled"`
+	ChatEnabled                 *bool                 `json:"chat_enabled"`
 	CustomMenuItems             *[]dto.CustomMenuItem `json:"custom_menu_items"`
 
 	// 默认配置
@@ -207,6 +219,18 @@ type UpdateSettingsRequest struct {
 
 	// Backend Mode
 	BackendModeEnabled bool `json:"backend_mode_enabled"`
+
+	// 支付设置 (易支付)
+	EpayEnabled   bool    `json:"epay_enabled"`
+	EpayAPIUrl    string  `json:"epay_api_url"`
+	EpayPID       int     `json:"epay_pid"`
+	EpayKey       string  `json:"epay_key"`
+	EpayNotifyURL string  `json:"epay_notify_url"`
+	EpayReturnURL string  `json:"epay_return_url"`
+	EpayUSDToRMB    float64  `json:"epay_usd_to_rmb"`
+	EpayMinTopupUSD   *float64 `json:"epay_min_topup_usd"`
+	EpayMaxTopupUSD   *float64 `json:"epay_max_topup_usd"`
+	EpayPresetAmounts *string  `json:"epay_preset_amounts"`
 }
 
 // UpdateSettings 更新系统设置
@@ -494,6 +518,12 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		PurchaseSubscriptionEnabled:      purchaseEnabled,
 		PurchaseSubscriptionURL:          purchaseURL,
 		SoraClientEnabled:                req.SoraClientEnabled,
+		ChatEnabled: func() bool {
+			if req.ChatEnabled != nil {
+				return *req.ChatEnabled
+			}
+			return previousSettings.ChatEnabled
+		}(),
 		CustomMenuItems:                  customMenuJSON,
 		DefaultConcurrency:               req.DefaultConcurrency,
 		DefaultBalance:                   req.DefaultBalance,
@@ -509,6 +539,31 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		MaxClaudeCodeVersion:             req.MaxClaudeCodeVersion,
 		AllowUngroupedKeyScheduling:      req.AllowUngroupedKeyScheduling,
 		BackendModeEnabled:               req.BackendModeEnabled,
+		EpayEnabled:                      req.EpayEnabled,
+		EpayAPIUrl:                       req.EpayAPIUrl,
+		EpayPID:                          req.EpayPID,
+		EpayKey:                          req.EpayKey,
+		EpayNotifyURL:                    req.EpayNotifyURL,
+		EpayReturnURL:                    req.EpayReturnURL,
+		EpayUSDToRMB:                     req.EpayUSDToRMB,
+		EpayMinTopupUSD: func() float64 {
+			if req.EpayMinTopupUSD != nil {
+				return *req.EpayMinTopupUSD
+			}
+			return previousSettings.EpayMinTopupUSD
+		}(),
+		EpayMaxTopupUSD: func() float64 {
+			if req.EpayMaxTopupUSD != nil {
+				return *req.EpayMaxTopupUSD
+			}
+			return previousSettings.EpayMaxTopupUSD
+		}(),
+		EpayPresetAmounts: func() string {
+			if req.EpayPresetAmounts != nil {
+				return *req.EpayPresetAmounts
+			}
+			return previousSettings.EpayPresetAmounts
+		}(),
 		OpsMonitoringEnabled: func() bool {
 			if req.OpsMonitoringEnabled != nil {
 				return *req.OpsMonitoringEnabled
@@ -591,6 +646,7 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		PurchaseSubscriptionEnabled:          updatedSettings.PurchaseSubscriptionEnabled,
 		PurchaseSubscriptionURL:              updatedSettings.PurchaseSubscriptionURL,
 		SoraClientEnabled:                    updatedSettings.SoraClientEnabled,
+		ChatEnabled:                          updatedSettings.ChatEnabled,
 		CustomMenuItems:                      dto.ParseCustomMenuItems(updatedSettings.CustomMenuItems),
 		DefaultConcurrency:                   updatedSettings.DefaultConcurrency,
 		DefaultBalance:                       updatedSettings.DefaultBalance,
@@ -610,6 +666,16 @@ func (h *SettingHandler) UpdateSettings(c *gin.Context) {
 		MaxClaudeCodeVersion:                 updatedSettings.MaxClaudeCodeVersion,
 		AllowUngroupedKeyScheduling:          updatedSettings.AllowUngroupedKeyScheduling,
 		BackendModeEnabled:                   updatedSettings.BackendModeEnabled,
+		EpayEnabled:                          updatedSettings.EpayEnabled,
+		EpayAPIUrl:                           updatedSettings.EpayAPIUrl,
+		EpayPID:                              updatedSettings.EpayPID,
+		EpayKeyConfigured:                    updatedSettings.EpayKeyConfigured,
+		EpayNotifyURL:                        updatedSettings.EpayNotifyURL,
+		EpayReturnURL:                        updatedSettings.EpayReturnURL,
+		EpayUSDToRMB:                         updatedSettings.EpayUSDToRMB,
+		EpayMinTopupUSD:                      updatedSettings.EpayMinTopupUSD,
+		EpayMaxTopupUSD:                      updatedSettings.EpayMaxTopupUSD,
+		EpayPresetAmounts:                    updatedSettings.EpayPresetAmounts,
 	})
 }
 

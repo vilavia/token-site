@@ -42,6 +42,7 @@ type SystemSettings struct {
 	PurchaseSubscriptionEnabled bool
 	PurchaseSubscriptionURL     string
 	SoraClientEnabled           bool
+	ChatEnabled                 bool
 	CustomMenuItems             string // JSON array of custom menu items
 
 	DefaultConcurrency   int
@@ -74,6 +75,19 @@ type SystemSettings struct {
 
 	// Backend 模式：禁用用户注册和自助服务，仅管理员可登录
 	BackendModeEnabled bool
+
+	// 支付设置 (易支付)
+	EpayEnabled       bool
+	EpayAPIUrl        string
+	EpayPID           int
+	EpayKey           string
+	EpayKeyConfigured bool
+	EpayNotifyURL     string
+	EpayReturnURL     string
+	EpayUSDToRMB      float64
+	EpayMinTopupUSD   float64
+	EpayMaxTopupUSD   float64
+	EpayPresetAmounts string // JSON array like "[5,10,20,50,100,200]"
 }
 
 type DefaultSubscriptionSetting struct {
@@ -103,6 +117,7 @@ type PublicSettings struct {
 	PurchaseSubscriptionEnabled bool
 	PurchaseSubscriptionURL     string
 	SoraClientEnabled           bool
+	ChatEnabled                 bool
 	CustomMenuItems             string // JSON array of custom menu items
 
 	LinuxDoOAuthEnabled bool

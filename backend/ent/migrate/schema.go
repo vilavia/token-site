@@ -487,6 +487,44 @@ var (
 			},
 		},
 	}
+	// PaymentOrdersColumns holds the columns for the "payment_orders" table.
+	PaymentOrdersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "order_no", Type: field.TypeString, Unique: true, Size: 64},
+		{Name: "trade_no", Type: field.TypeString, Nullable: true, Size: 64},
+		{Name: "amount_usd", Type: field.TypeFloat64, SchemaType: map[string]string{"postgres": "decimal(20,8)"}},
+		{Name: "amount_rmb", Type: field.TypeFloat64, SchemaType: map[string]string{"postgres": "decimal(20,2)"}},
+		{Name: "exchange_rate", Type: field.TypeFloat64, SchemaType: map[string]string{"postgres": "decimal(10,4)"}},
+		{Name: "status", Type: field.TypeString, Size: 32, Default: "pending"},
+		{Name: "pay_type", Type: field.TypeString, Nullable: true, Size: 32},
+		{Name: "paid_at", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+	}
+	// PaymentOrdersTable holds the schema information for the "payment_orders" table.
+	PaymentOrdersTable = &schema.Table{
+		Name:       "payment_orders",
+		Columns:    PaymentOrdersColumns,
+		PrimaryKey: []*schema.Column{PaymentOrdersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "paymentorder_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{PaymentOrdersColumns[1]},
+			},
+			{
+				Name:    "paymentorder_order_no",
+				Unique:  true,
+				Columns: []*schema.Column{PaymentOrdersColumns[2]},
+			},
+			{
+				Name:    "paymentorder_status",
+				Unique:  false,
+				Columns: []*schema.Column{PaymentOrdersColumns[7]},
+			},
+		},
+	}
 	// PromoCodesColumns holds the columns for the "promo_codes" table.
 	PromoCodesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1099,6 +1137,7 @@ var (
 		ErrorPassthroughRulesTable,
 		GroupsTable,
 		IdempotencyRecordsTable,
+		PaymentOrdersTable,
 		PromoCodesTable,
 		PromoCodeUsagesTable,
 		ProxiesTable,
@@ -1146,6 +1185,9 @@ func init() {
 	}
 	IdempotencyRecordsTable.Annotation = &entsql.Annotation{
 		Table: "idempotency_records",
+	}
+	PaymentOrdersTable.Annotation = &entsql.Annotation{
+		Table: "payment_orders",
 	}
 	PromoCodesTable.Annotation = &entsql.Annotation{
 		Table: "promo_codes",

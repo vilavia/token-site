@@ -55,6 +55,7 @@ type SystemSettings struct {
 	PurchaseSubscriptionEnabled bool             `json:"purchase_subscription_enabled"`
 	PurchaseSubscriptionURL     string           `json:"purchase_subscription_url"`
 	SoraClientEnabled           bool             `json:"sora_client_enabled"`
+	ChatEnabled                 bool             `json:"chat_enabled"`
 	CustomMenuItems             []CustomMenuItem `json:"custom_menu_items"`
 
 	DefaultConcurrency   int                          `json:"default_concurrency"`
@@ -86,6 +87,18 @@ type SystemSettings struct {
 
 	// Backend Mode
 	BackendModeEnabled bool `json:"backend_mode_enabled"`
+
+	// 支付设置 (易支付)
+	EpayEnabled       bool    `json:"epay_enabled"`
+	EpayAPIUrl        string  `json:"epay_api_url"`
+	EpayPID           int     `json:"epay_pid"`
+	EpayKeyConfigured bool    `json:"epay_key_configured"`
+	EpayNotifyURL     string  `json:"epay_notify_url"`
+	EpayReturnURL     string  `json:"epay_return_url"`
+	EpayUSDToRMB      float64 `json:"epay_usd_to_rmb"`
+	EpayMinTopupUSD   float64 `json:"epay_min_topup_usd"`
+	EpayMaxTopupUSD   float64 `json:"epay_max_topup_usd"`
+	EpayPresetAmounts string  `json:"epay_preset_amounts"`
 }
 
 type DefaultSubscriptionSetting struct {

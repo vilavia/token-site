@@ -1910,8 +1910,7 @@ const editStatusOptions = computed(() => [
 ])
 
 const subscriptionTypeOptions = computed(() => [
-  { value: 'standard', label: t('admin.groups.subscription.standard') },
-  { value: 'subscription', label: t('admin.groups.subscription.subscription') }
+  { value: 'standard', label: t('admin.groups.subscription.standard') }
 ])
 
 // 降级分组选项（创建时）- 仅包含 anthropic 平台且未启用 claude_code_only 的分组

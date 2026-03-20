@@ -40,6 +40,16 @@ services:
       - JWT_SECRET=${JWT_SECRET:-}
       - TOTP_ENCRYPTION_KEY=${TOTP_ENCRYPTION_KEY:-}
       - TZ=${TZ:-Asia/Shanghai}
+      # =======================================================================
+      # 易支付 Payment Configuration
+      # =======================================================================
+      - EPAY_ENABLED=${EPAY_ENABLED:-false}
+      - EPAY_API_URL=${EPAY_API_URL:-}
+      - EPAY_PID=${EPAY_PID:-0}
+      - EPAY_KEY=${EPAY_KEY:-}
+      - EPAY_NOTIFY_URL=${EPAY_NOTIFY_URL:-}
+      - EPAY_RETURN_URL=${EPAY_RETURN_URL:-}
+      - EPAY_USD_TO_RMB=${EPAY_USD_TO_RMB:-7.2}
     depends_on:
       postgres:
         condition: service_healthy

@@ -567,6 +567,15 @@
                 {{ t('admin.users.balanceHistory') }}
               </button>
 
+              <!-- View Orders -->
+              <button
+                @click="handleViewOrders(user); closeActionMenu()"
+                class="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-700"
+              >
+                <Icon name="clock" size="sm" class="text-gray-400" :stroke-width="2" />
+                {{ t('admin.orders.viewOrders') }}
+              </button>
+
               <div class="my-1 border-t border-gray-100 dark:border-dark-700"></div>
 
               <!-- Delete (not for admin) -->
@@ -598,6 +607,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
 import { getPersistedPageSize } from '@/composables/usePersistedPageSize'
@@ -605,6 +615,7 @@ import { formatDateTime } from '@/utils/format'
 import Icon from '@/components/icons/Icon.vue'
 
 const { t } = useI18n()
+const router = useRouter()
 import { adminAPI } from '@/api/admin'
 import type { AdminUser, AdminGroup, UserAttributeDefinition } from '@/types'
 import type { BatchUserUsageStats } from '@/api/admin/dashboard'
@@ -1253,6 +1264,10 @@ const handleToggleStatus = async (user: AdminUser) => {
     appStore.showError(error.response?.data?.detail || t('admin.users.failedToToggle'))
     console.error('Error toggling user status:', error)
   }
+}
+
+const handleViewOrders = (user: AdminUser) => {
+  router.push({ path: '/admin/orders', query: { user_id: String(user.id) } })
 }
 
 const handleViewApiKeys = (user: AdminUser) => {

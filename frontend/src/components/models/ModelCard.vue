@@ -18,18 +18,22 @@
       </div>
 
       <!-- Pricing -->
-      <div class="space-y-1">
+      <div class="space-y-1.5">
         <div class="flex items-center justify-between text-sm">
           <span class="text-gray-500 dark:text-dark-400">{{ t('models.inputPrice') }}</span>
-          <span class="font-medium text-gray-800 dark:text-dark-200">
-            ${{ model.input_price_mtok.toFixed(2) }} {{ t('models.perMTokens') }}
-          </span>
+          <div class="text-right">
+            <span class="font-medium text-gray-800 dark:text-dark-200">${{ model.input_price_per_mtok.toFixed(2) }}</span>
+            <span v-if="model.official_input_price_per_mtok > 0 && model.official_input_price_per_mtok !== model.input_price_per_mtok" class="ml-1.5 text-xs text-gray-400 line-through dark:text-dark-500">${{ model.official_input_price_per_mtok.toFixed(2) }}</span>
+            <span class="text-xs text-gray-400 dark:text-dark-500"> {{ t('models.perMTokens') }}</span>
+          </div>
         </div>
         <div class="flex items-center justify-between text-sm">
           <span class="text-gray-500 dark:text-dark-400">{{ t('models.outputPrice') }}</span>
-          <span class="font-medium text-gray-800 dark:text-dark-200">
-            ${{ model.output_price_mtok.toFixed(2) }} {{ t('models.perMTokens') }}
-          </span>
+          <div class="text-right">
+            <span class="font-medium text-gray-800 dark:text-dark-200">${{ model.output_price_per_mtok.toFixed(2) }}</span>
+            <span v-if="model.official_output_price_per_mtok > 0 && model.official_output_price_per_mtok !== model.output_price_per_mtok" class="ml-1.5 text-xs text-gray-400 line-through dark:text-dark-500">${{ model.official_output_price_per_mtok.toFixed(2) }}</span>
+            <span class="text-xs text-gray-400 dark:text-dark-500"> {{ t('models.perMTokens') }}</span>
+          </div>
         </div>
       </div>
 
