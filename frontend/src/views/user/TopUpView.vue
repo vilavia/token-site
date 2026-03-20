@@ -367,9 +367,21 @@ async function cancelOrder(order: PaymentOrder) {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   fetchExchangeRate()
   fetchLimits()
+
+  // 支付完成返回时，等待异步通知处理完再刷新订单
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.get('trade_status') === 'TRADE_SUCCESS') {
+    // 给异步通知几秒处理时间
+    await new Promise(r => setTimeout(r, 2000))
+    // 刷新余额
+    authStore.refreshUser().catch(() => {})
+    // 清除URL参数
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
   fetchOrders()
 })
 </script>

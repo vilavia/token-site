@@ -15,9 +15,10 @@ func RegisterPaymentRoutes(
 	jwtAuth middleware.JWTAuthMiddleware,
 	settingService *service.SettingService,
 ) {
-	// 易支付异步回调（无需认证）
+	// 易支付异步回调（无需认证，GET+POST 都支持）
 	payment := v1.Group("/payment")
 	{
+		payment.GET("/notify", h.Notify)
 		payment.POST("/notify", h.Notify)
 	}
 
