@@ -243,11 +243,12 @@ uninstall() {
 # 配置服务器
 # =============================================================================
 configure_server() {
-    if [ -t 0 ]; then
+    # curl | bash 时 stdin 是管道，需要从 /dev/tty 读取用户输入
+    if [ -t 0 ] || [ -e /dev/tty ]; then
         echo ""
-        read -p "监听地址 [$SERVER_HOST]: " -r input
+        read -p "监听地址 [$SERVER_HOST]: " -r input < /dev/tty
         SERVER_HOST="${input:-$SERVER_HOST}"
-        read -p "监听端口 [$SERVER_PORT]: " -r input
+        read -p "监听端口 [$SERVER_PORT]: " -r input < /dev/tty
         SERVER_PORT="${input:-$SERVER_PORT}"
     fi
 }
