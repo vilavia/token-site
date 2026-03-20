@@ -352,7 +352,8 @@ export default {
     mySubscriptions: '我的订阅',
     buySubscription: '充值/订阅',
     docs: '文档',
-    sora: 'Sora 创作'
+    sora: 'Sora 创作',
+    topUp: '充值'
   },
 
   // Auth
@@ -811,6 +812,25 @@ export default {
     failedToRedeem: '兑换失败，请检查兑换码后重试。',
     subscriptionRefreshFailed: '兑换成功，但订阅状态刷新失败。',
     pleaseEnterCode: '请输入兑换码'
+  },
+
+  // Top Up
+  topup: {
+    title: '充值',
+    currentBalance: '当前余额',
+    selectAmount: '选择金额',
+    customAmount: '自定义：',
+    enterAmount: '输入金额',
+    paymentMethod: '支付方式',
+    alipay: '支付宝',
+    wechatPay: '微信支付',
+    payNow: '立即支付',
+    orderHistory: '充值记录',
+    noOrders: '暂无充值记录',
+    orderNo: '订单号',
+    amount: '金额',
+    status: '状态',
+    time: '时间',
   },
 
   // Profile

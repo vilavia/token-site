@@ -352,7 +352,8 @@ export default {
     mySubscriptions: 'My Subscriptions',
     buySubscription: 'Recharge / Subscription',
     docs: 'Docs',
-    sora: 'Sora Studio'
+    sora: 'Sora Studio',
+    topUp: 'Top Up'
   },
 
   // Auth
@@ -806,6 +807,25 @@ export default {
     failedToRedeem: 'Failed to redeem code. Please check the code and try again.',
     subscriptionRefreshFailed: 'Redeemed successfully, but failed to refresh subscription status.',
     pleaseEnterCode: 'Please enter a redeem code'
+  },
+
+  // Top Up
+  topup: {
+    title: 'Top Up',
+    currentBalance: 'Current Balance',
+    selectAmount: 'Select Amount',
+    customAmount: 'Custom:',
+    enterAmount: 'Enter amount',
+    paymentMethod: 'Payment Method',
+    alipay: 'Alipay',
+    wechatPay: 'WeChat Pay',
+    payNow: 'Pay Now',
+    orderHistory: 'Order History',
+    noOrders: 'No payment history',
+    orderNo: 'Order',
+    amount: 'Amount',
+    status: 'Status',
+    time: 'Time',
   },
 
   // Profile

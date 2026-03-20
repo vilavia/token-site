@@ -154,6 +154,17 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/topup',
+    name: 'TopUp',
+    component: () => import('@/views/user/TopUpView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Top Up',
+      titleKey: 'topup.title',
+    }
+  },
+  {
     path: '/redeem',
     name: 'Redeem',
     component: () => import('@/views/user/RedeemView.vue'),
