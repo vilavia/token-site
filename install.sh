@@ -194,13 +194,10 @@ upgrade() {
     if [ ! -f "$INSTALL_DIR/sub2api" ]; then
         fail "未检测到安装，请先安装"; exit 1
     fi
-    local current=$("$INSTALL_DIR/sub2api" --version 2>/dev/null || echo "unknown")
-    info "当前版本: $current"
-
-    get_latest_version
-
     info "停止服务..."
     systemctl stop sub2api 2>/dev/null || true
+
+    get_latest_version
 
     # 备份
     cp "$INSTALL_DIR/sub2api" "$INSTALL_DIR/sub2api.backup"
@@ -211,7 +208,7 @@ upgrade() {
 
     info "启动服务..."
     systemctl start sub2api
-    ok "升级完成: $current → $LATEST_VERSION"
+    ok "升级完成 → $LATEST_VERSION"
 }
 
 # =============================================================================
